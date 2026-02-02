@@ -1,0 +1,9 @@
+# PlatformIO build artifacts
+.pio/
+
+# VS Code / PlatformIO IDE settings
+.vscode/
+
+# OS junk
+.DS_Store
+Thumbs.db
