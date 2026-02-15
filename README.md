@@ -38,7 +38,7 @@ After setup, the device will automatically reconnect to WiFi on every boot.
 To display PC status data, a small Windows sender tool must be installed on the PC.
 
 Download and setup instructions:  
-https://kreaxv.top/m5setup/
+https://m5setup.kreaxv.top/
 
 ### Web Wake-on-LAN
 
