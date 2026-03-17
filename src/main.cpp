@@ -105,7 +105,7 @@ const unsigned long BTN_LONG_PRESS_MS = 2000;
 // ================== BUTTON A: SHOW ID OVERLAY ==================
 static bool showIdOverlay = false;
 static unsigned long idOverlayUntil = 0;
-static const unsigned long ID_OVERLAY_MS = 4000;
+static const unsigned long ID_OVERLAY_MS = 10000;
 static bool idOverlayDrawn = false;
 
 // Stats
@@ -166,12 +166,19 @@ static String macToString(const uint8_t mac[6]) {
 static void drawIdOverlay() {
   M5.Display.fillScreen(COLOR_BLACK);
 
-  M5.Display.setCursor(20, 40);
+  M5.Display.setCursor(20, 30);
   M5.Display.setTextSize(2);
   M5.Display.setTextColor(COLOR_BAR);
-  M5.Display.print("ID: ");
+  M5.Display.println("M5 MAC: ");
+  M5.Display.setCursor(20, 50);
   M5.Display.setTextColor(COLOR_WHITE);
-  M5.Display.println(rawId);
+
+  // format rawId as AA:BB:CC:DD:EE:FF
+  for (int i = 0; i < 6; i++) {
+      if (i > 0) M5.Display.print(":");
+      M5.Display.print(rawId.substring(i*2, i*2+2));
+  }
+  M5.Display.println();
 
   // MAC line
   M5.Display.setTextSize(1.5);
@@ -625,8 +632,14 @@ void setup(){
   M5.Speaker.setVolume(128);
 
   // IDs
-  rawId = String((uint32_t)ESP.getEfuseMac(), HEX);
-  rawId.toLowerCase();
+  uint8_t mac[6];
+  esp_read_mac(mac, ESP_MAC_WIFI_STA);
+
+  char macHex[13];
+  snprintf(macHex, sizeof(macHex), "%02x%02x%02x%02x%02x%02x",
+          mac[0], mac[1], mac[2], mac[3], mac[4], mac[5]);
+
+  rawId = String(macHex);        // match other device EXACTLY
   deviceHash = sha256Hex(rawId);
 
   // Load saved UI settings
@@ -645,19 +658,25 @@ void setup(){
   M5.Display.setTextColor(COLOR_BAR);
   M5.Display.println(" reset");
 
-  M5.Display.setCursor(30, 45);
+  M5.Display.setCursor(20, 35);
   M5.Display.setTextSize(2);
   M5.Display.setTextColor(COLOR_BAR);
   M5.Display.print("WiFi: ");
   M5.Display.setTextColor(COLOR_WHITE);
   M5.Display.println("M5-Setup");
 
-  M5.Display.setCursor(55, 80);
+  M5.Display.setCursor(20, 60);
   M5.Display.setTextSize(2);
   M5.Display.setTextColor(COLOR_BAR);
-  M5.Display.print("ID: ");
+  M5.Display.println("M5 MAC: ");
+  M5.Display.setCursor(20, 80);
   M5.Display.setTextColor(COLOR_WHITE);
-  M5.Display.println(rawId);
+  // format rawId as AA:BB:CC:DD:EE:FF
+  for (int i = 0; i < 6; i++) {
+      if (i > 0) M5.Display.print(":");
+      M5.Display.print(rawId.substring(i*2, i*2+2));
+  }
+  M5.Display.println();
 
   M5.Display.setTextSize(1.5);
   M5.Display.setCursor(20, 120);
